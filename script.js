@@ -62,9 +62,24 @@ function setCurrentTime(type) {
 }
 
 function isSmartphone() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-        navigator.userAgent
-    );
+    return /iphone|android.+mobile/.test(navigator.userAgent.toLowerCase());
+}
+
+function generateGoogleCalendarUrl(event) {
+    const baseUrl = isSmartphone()
+        ? "https://calendar.google.com/calendar/gp?pli=1#~calendar:view=e&"
+        : "https://calendar.google.com/calendar/r/eventedit?";
+
+    const params = new URLSearchParams({
+        text: event.title,
+        dates: `${event.startFormatted}/${event.endFormatted}`,
+        details: event.details,
+        ctz: "Asia/Tokyo",
+    });
+
+    let url = `${baseUrl}${params.toString()}`;
+
+    return url;
 }
 
 document.addEventListener("DOMContentLoaded", setDefaultValues);
@@ -72,7 +87,7 @@ document.addEventListener("DOMContentLoaded", setDefaultValues);
 document.getElementById("eventForm").addEventListener("submit", function (e) {
     e.preventDefault();
 
-    const title = encodeURIComponent(document.getElementById("title").value);
+    const title = document.getElementById("title").value;
     const date = document.getElementById("date").value;
 
     const start = luxon.DateTime.fromISO(
@@ -86,18 +101,13 @@ document.getElementById("eventForm").addEventListener("submit", function (e) {
     const startFormatted = start.toFormat("yyyyMMdd'T'HHmmss");
     const endFormatted = end.toFormat("yyyyMMdd'T'HHmmss");
 
-    const baseUrl = isSmartphone()
-        ? "https://calendar.google.com/calendar/u/0/gp"
-        : "https://calendar.google.com/calendar/u/0/r/eventedit";
+    const event = {
+        title: title,
+        startFormatted: startFormatted,
+        endFormatted: endFormatted,
+    };
 
-    const params = new URLSearchParams({
-        text: title,
-        dates: `${startFormatted}/${endFormatted}`,
-        details: "",
-        ctz: "Asia/Tokyo",
-    });
-
-    const calendarUrl = `${baseUrl}?${params.toString()}`;
+    const calendarUrl = generateGoogleCalendarUrl(event);
 
     const newWindow = window.open(calendarUrl, "_blank");
 
