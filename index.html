@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Googleカレンダー記録</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Googleカレンダー記録</h1>
+        <form id="eventForm">
+            <label for="title">やったこと:</label>
+            <input type="text" id="title" required>
+
+            <label for="date">日付:</label>
+            <input type="text" id="date" required>
+
+            <div class="time-picker">
+                <div class="time-picker-gui">
+                    <label>開始時間:</label>
+                    <div id="startTimeDisplay" class="time-display">00:00</div>
+                    <div class="minute-buttons">
+                        <button type="button" onclick="adjustTime('start', 'minute', 1)">+1分</button>
+                        <button type="button" onclick="adjustTime('start', 'minute', 5)">+5分</button>
+                        <button type="button" onclick="adjustTime('start', 'minute', 10)">+10分</button>
+                        <button type="button" onclick="adjustTime('start', 'minute', 30)">+30分</button>
+                        <button type="button" onclick="adjustTime('start', 'minute', -1)">-1分</button>
+                        <button type="button" onclick="adjustTime('start', 'minute', -5)">-5分</button>
+                        <button type="button" onclick="adjustTime('start', 'minute', -10)">-10分</button>
+                        <button type="button" onclick="adjustTime('start', 'minute', -30)">-30分</button>
+                    </div>
+                        <button type="button" class="now-button" onclick="setCurrentTime('start')">現在時刻</button>
+                </div>
+
+                <div class="time-picker-gui">
+                    <label>終了時間:</label>
+                    <div id="endTimeDisplay" class="time-display">00:00</div>
+                    <div class="minute-buttons">
+                        <button type="button" onclick="adjustTime('end', 'minute', 1)">+1分</button>
+                        <button type="button" onclick="adjustTime('end', 'minute', 5)">+5分</button>
+                        <button type="button" onclick="adjustTime('end', 'minute', 10)">+10分</button>
+                        <button type="button" onclick="adjustTime('end', 'minute', 30)">+30分</button>
+                        <button type="button" onclick="adjustTime('end', 'minute', -1)">-1分</button>
+                        <button type="button" onclick="adjustTime('end', 'minute', -5)">-5分</button>
+                        <button type="button" onclick="adjustTime('end', 'minute', -10)">-10分</button>
+                        <button type="button" onclick="adjustTime('end', 'minute', -30)">-30分</button>
+                    </div>
+                    <button type="now" class="now-button" onclick="setCurrentTime('end')">現在時刻</button>
+                </div>
+            </div>
+
+            <button type="submit">カレンダーに追加</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/luxon@2.3.1/build/global/luxon.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/ja.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
