@@ -87,7 +87,7 @@ document.getElementById("eventForm").addEventListener("submit", function (e) {
     const endFormatted = end.toFormat("yyyyMMdd'T'HHmmss");
 
     const baseUrl = isSmartphone()
-        ? `https://www.google.com/calendar/event?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=&ctz=Asia/Tokyo`
+        ? "https://calendar.google.com/calendar/u/0/gp"
         : "https://calendar.google.com/calendar/u/0/r/eventedit";
 
     const params = new URLSearchParams({
