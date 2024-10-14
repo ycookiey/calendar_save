@@ -2,7 +2,7 @@ let startTime, endTime;
 
 function setDefaultValues() {
     const now = luxon.DateTime.now().setZone("Asia/Tokyo");
-    const halfHourBefore = now.minus({ hours: 0.5 });
+    const halfHourBefore = now.minus({ minutes: 30 });
 
     startTime = halfHourBefore;
     endTime = now;
@@ -29,13 +29,13 @@ function adjustTime(type, unit, value) {
     if (type === "start") {
         startTime = newTime;
         if (startTime >= endTime) {
-            endTime = startTime.plus({ hours: 0.5 });
+            endTime = startTime.plus({ minutes: 30 });
             updateTimeDisplay("end", endTime);
         }
     } else {
         endTime = newTime;
         if (endTime <= startTime) {
-            startTime = endTime.minus({ hours: 0.5 });
+            startTime = endTime.minus({ minutes: 30 });
             updateTimeDisplay("start", startTime);
         }
     }
@@ -48,17 +48,23 @@ function setCurrentTime(type) {
     if (type === "start") {
         startTime = now;
         if (startTime >= endTime) {
-            endTime = startTime.plus({ hours: 0.5 });
+            endTime = startTime.plus({ minutes: 30 });
             updateTimeDisplay("end", endTime);
         }
     } else {
         endTime = now;
         if (endTime <= startTime) {
-            startTime = endTime.minus({ hours: 0.5 });
+            startTime = endTime.minus({ minutes: 30 });
             updateTimeDisplay("start", startTime);
         }
     }
     updateTimeDisplay(type, now);
+}
+
+function isSmartphone() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+        navigator.userAgent
+    );
 }
 
 document.addEventListener("DOMContentLoaded", setDefaultValues);
@@ -80,8 +86,26 @@ document.getElementById("eventForm").addEventListener("submit", function (e) {
     const startFormatted = start.toFormat("yyyyMMdd'T'HHmmss");
     const endFormatted = end.toFormat("yyyyMMdd'T'HHmmss");
 
-    const calendarUrl = isSmartphone()
-        ? `https://calendar.google.com/calendar/u/0/gp?pli=1#~calendar:view=e?text=${title}&dates=${startFormatted}/${endFormatted}&details=&ctz=Asia/Tokyo`
-        : `https://calendar.google.com/calendar/u/0/r/eventedit?text=${title}&dates=${startFormatted}/${endFormatted}&details=&ctz=Asia/Tokyo`;
-    window.open(calendarUrl, "_blank");
+    const baseUrl = isSmartphone()
+        ? `https://www.google.com/calendar/event?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=&ctz=Asia/Tokyo`
+        : "https://calendar.google.com/calendar/u/0/r/eventedit";
+
+    const params = new URLSearchParams({
+        text: title,
+        dates: `${startFormatted}/${endFormatted}`,
+        details: "",
+        ctz: "Asia/Tokyo",
+    });
+
+    const calendarUrl = `${baseUrl}?${params.toString()}`;
+
+    const newWindow = window.open(calendarUrl, "_blank");
+
+    if (
+        !newWindow ||
+        newWindow.closed ||
+        typeof newWindow.closed == "undefined"
+    ) {
+        window.location.href = calendarUrl;
+    }
 });
