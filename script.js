@@ -80,7 +80,8 @@ document.getElementById("eventForm").addEventListener("submit", function (e) {
     const startFormatted = start.toFormat("yyyyMMdd'T'HHmmss");
     const endFormatted = end.toFormat("yyyyMMdd'T'HHmmss");
 
-    const calendarUrl = `https://calendar.google.com/calendar/u/0/r/eventedit?text=${title}&dates=${startFormatted}/${endFormatted}&details=&ctz=Asia/Tokyo`;
-
+    const calendarUrl = isSmartphone()
+        ? `googlecalendar://www.google.com/calendar/event?action=TEMPLATE&text=${title}&dates=${startFormatted}/${endFormatted}&details=&ctz=Asia/Tokyo`
+        : `https://calendar.google.com/calendar/u/0/r/eventedit?text=${title}&dates=${startFormatted}/${endFormatted}&details=&ctz=Asia/Tokyo`;
     window.open(calendarUrl, "_blank");
 });
